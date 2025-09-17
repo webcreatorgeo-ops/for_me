@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+<meta charset="UTF-8">
+<title>ადმინის ჩატი</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+body { background-color: #0b3d0b; color: #e0f7e0; }
+.card-unread { background-color: #1c8c1c; color: #e0f7e0; }
+.card-read { background-color: #144214; color: #a0f0a0; }
+.btn-read { background-color: #4CAF50; border: none; }
+</style>
+</head>
+<body>
+<div class="container mt-5">
+    <h2>ადმინის დაფა</h2>
+    {% for msg in messages %}
+    <div class="card mb-2 p-2 {% if not msg.read_by_admin %}card-unread{% else %}card-read{% endif %}">
+        <small>{{ msg.timestamp.strftime('%Y-%m-%d %H:%M') }} - {{ msg.sender.name }}</small>
+        <p>{{ msg.content }}</p>
+        {% if not msg.read_by_admin %}
+        <form method="POST" action="{{ url_for('mark_read', message_id=msg.id) }}">
+            <button type="submit" class="btn btn-read btn-sm">წაკითხულად მონიშვნა</button>
+        </form>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+</body>
+</html>

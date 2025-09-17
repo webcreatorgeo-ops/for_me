@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="UTF-8">
+    <title>მომხმარებლები</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <h2 class="mb-4 text-center">რეგისტრირებული მომხმარებლები</h2>
+
+        <table class="table table-striped table-bordered shadow-sm">
+            <thead class="table-dark text-center">
+                <tr>
+                    <th>სახელი</th>
+                    <th>გვარი</th>
+                    <th>ელ-ფოსტა</th>
+                    <th>სტატუსი</th>
+                    <th>ქალაქი</th>
+                    <th>ადმინი</th>
+                    <th>ქმედება</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                    <tr class="text-center">
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.surname }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.state }}</td>
+                        <td>{{ user.city }}</td>
+                        <td>{{ '✔️' if user.is_admin else '❌' }}</td>
+                        <td>
+                            <form action="{{ url_for('delete_user', user_id=user.id) }}" method="POST" onsubmit="return confirm('ნამდვილად გსურთ წაშლა?');">
+                                <button type="submit" class="btn btn-sm btn-danger">წაშლა</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="text-center mt-4">
+            <a href="{{ url_for('admin') }}" class="btn btn-secondary">← უკან ადმინის პანელზე</a>
+        </div>
+        <a href="{{ url_for('download_user') }}" class="btn btn-success mb-3">⬇️ გადმოწერა Excel</a>
+
+    </div>
+</body>
+</html>

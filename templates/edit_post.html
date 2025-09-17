@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8">
+  <title>პოსტის რედაქტირება</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tinymce@6/tinymce.min.js" referrerpolicy="origin"></script>
+<script>
+  tinymce.init({
+    selector: '#content',
+    height: 300,
+    plugins: 'image link lists code fullscreen',
+    toolbar: 'undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist | link image | code fullscreen',
+    image_caption: true
+  });
+</script>
+
+</head>
+<body class="bg-light">
+  <div class="container py-5">
+    <h2 class="mb-4 text-center">✏️ პოსტის რედაქტირება</h2>
+    <form method="POST" enctype="multipart/form-data" class="bg-white p-4 shadow rounded">
+      <div class="mb-3">
+        <label class="form-label">სათაური</label>
+        <input type="text" name="title" class="form-control" value="{{ post.title }}" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">შინაარსი</label>
+        <textarea name="content" id="content" class="form-control">{{ post.content }}</textarea>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">ახალი ფოტო (თუ გინდა შეცვალო)</label>
+        <input type="file" name="image" class="form-control">
+        {% if post.image_url %}
+          <p class="mt-2">მიმდინარე ფოტო:</p>
+          <img src="{{ post.image_url }}" style="max-width: 200px;">
+        {% endif %}
+      </div>
+      <button type="submit" class="btn btn-success">💾 შენახვა</button>
+    </form>
+  </div>
+</body>
+</html>

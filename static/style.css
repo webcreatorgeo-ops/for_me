@@ -1,0 +1,64 @@
+:root {
+  --bg: #0e1116;
+  --card: #151a22;
+  --line: #2b3442;
+  --x: #7dd3fc;   /* X ფერი */
+  --o: #a78bfa;   /* O ფერი */
+  --glow: 0 0 24px rgba(125, 211, 252, 0.25);
+}
+
+body {
+  background: linear-gradient(135deg, #0b0f14, #111827 60%, #0b1220);
+}
+
+.card {
+  background: var(--card);
+}
+
+.board {
+  width: min(420px, 92vw);
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  padding: 14px;
+  background: var(--card);
+  border-radius: 24px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+}
+
+.cell {
+  aspect-ratio: 1/1;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: #0c121b;
+  color: #e5e7eb;
+  font-size: 48px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  display: grid;
+  place-items: center;
+  transition: transform .08s ease, box-shadow .2s ease, border-color .2s ease;
+  user-select: none;
+}
+
+.cell:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--glow);
+  border-color: #3b82f6;
+}
+
+.cell.x { color: var(--x); text-shadow: 0 0 10px rgba(125,211,252,.3); }
+.cell.o { color: var(--o); text-shadow: 0 0 10px rgba(167,139,250,.3); }
+
+.cell:disabled {
+  opacity: .95;
+  cursor: not-allowed;
+}
+
+.badge#status {
+  font-size: .95rem;
+  padding: .55rem .8rem;
+  background: #1f2937;
+  border: 1px solid #374151;
+  border-radius: 999px;
+}

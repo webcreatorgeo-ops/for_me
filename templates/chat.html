@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8">
+  <title>ჩატი</title>
+
+  <style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+  }
+
+  .chat-container {
+    width: 100%;
+    max-width: 600px;  /* არ გაიზრდება ძალიან დიდ ეკრანზე */
+    height: 80vh;
+    background: #fff;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+
+  #messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .message {
+    padding: 10px 15px;
+    border-radius: 20px;
+    word-wrap: break-word;
+    max-width: 90%;
+  }
+
+  .user {
+    background: #0d6efd;
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 0;
+  }
+
+  .admin {
+    background: #198754;
+    color: white;
+    align-self: flex-start;
+    border-bottom-left-radius: 0;
+  }
+
+  .chat-form {
+    display: flex;
+    border-top: 1px solid #ccc;
+    padding: 10px;
+    background: #f7f7f7;
+  }
+
+  .chat-form input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    outline: none;
+  }
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+
+  .chat-form button {
+    margin-left: 10px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 20px;
+    background: #0d6efd;
+    color: white;
+    cursor: pointer;
+  }
+
+
+</style>
+
+</head>
+<body>
+
+  <div class="chat-container">
+     <h3 style="padding:10px; text-align:center; display: flex; justify-content: space-between; align-items: center;">
+  💬 {{ user.name }}
+  <button onclick="window.location.href='/'"
+          style="padding:5px 10px; border:none; border-radius:5px; background:#ffc107; color:#000; cursor:pointer;">
+    🏠 მთავარი გვერდი
+  </button>
+</h3>
+
+    <div id="messages"></div>
+
+    <form id="chat-form" class="chat-form">
+      <input type="text" id="message" placeholder="შეიყვანე ტექსტი..." required>
+      <button type="submit">გაგზავნა</button>
+    </form>
+  </div>
+
+
+
+
+  <script>
+    const userId = {{ user.id }};
+    const messagesDiv = document.getElementById("messages");
+    const form = document.getElementById("chat-form");
+    const input = document.getElementById("message");
+    let lastMessageId = 0;
+
+    async function loadMessages() {
+      const res = await fetch(`/get_messages/${userId}`);
+      const data = await res.json();
+
+      // მხოლოდ ახალი მესიჯების დამატება
+      data.forEach(m => {
+        if (m.id > lastMessageId) {
+          const div = document.createElement("div");
+          div.className = `message ${m.sender}`;
+          div.innerHTML = `${m.sender === 'user' ? '🧑' : '🛡️'} ${m.message} <div style="font-size:0.7em; color:#eee; margin-top:3px;">${m.time}</div>`;
+          messagesDiv.appendChild(div);
+          lastMessageId = m.id;
+        }
+      });
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const msg = input.value.trim();
+      if (!msg) return;
+      await fetch("/send_message", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ message: msg })
+      });
+      input.value = "";
+      loadMessages();
+    });
+
+    // ავტო-განახლება ყოველ 2 წამში, მაგრამ DOM მთლიანად არ იცვლება
+    setInterval(loadMessages, 2000);
+    loadMessages();
+  </script>
+</body>
+</html>
